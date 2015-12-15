@@ -29,3 +29,6 @@ It requires [Scrapy](http://scrapy.org/) and [PyMongo](https://api.mongodb.org/p
 3. The tweets will be saved to disk in `./Data/tweet/` in default settings and `./Data/user/` is for user data. The file format is JSON. Change the `SAVE_TWEET_PATH` and `SAVE_USER_PATH` in `TweetScraper/settings.py` if you want another location.
 
 4.  In you want to save the data to MongoDB, change the `ITEM_PIPELINES` in `TweetScraper/settings.py` from `TweetScraper.pipelines.SaveToFilePipeline` to `TweetScraper.pipelines.SaveToMongoPipeline`.
+
+# License and Citation #
+TweetScraper is released under the [GNU GENERAL PUBLIC LICENSE, Version 2](https://github.com/jonbakerfish/TweetScraper/blob/master/LICENSE)
