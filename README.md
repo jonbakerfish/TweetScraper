@@ -1,7 +1,7 @@
 # Introduction #
 `TweetScraper` can get tweets from [Twitter Search](https://twitter.com/search-home). 
 It is built on [Scrapy](http://scrapy.org/) without using [Twitter's APIs](https://dev.twitter.com/rest/public).
-The crawled data is not as *clean* as the one obtained by the APIs.
+The crawled data is not as *clean* as the one obtained by the APIs, but the benefits are you free from the API's rate limits and restrictions. Ideally, you can get all the data from Twitter Search.
 
 **WARNING:** please be polite and follow the [crawler's politeness policy](https://en.wikipedia.org/wiki/Web_crawler#Politeness_policy).
  
