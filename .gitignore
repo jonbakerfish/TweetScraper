@@ -1,0 +1,4 @@
+Data/
+pyenv/
+
+*.pyc
