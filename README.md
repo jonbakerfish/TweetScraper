@@ -1,7 +1,7 @@
 # Introduction #
 `TweetScraper` can get tweets from [Twitter Search](https://twitter.com/search-home). 
 It is built on [Scrapy](http://scrapy.org/) without using [Twitter's APIs](https://dev.twitter.com/rest/public).
-The crawled data is not as *clean* as the one obtained by the APIs, but the benefits are you get rid of the API's rate limits and restrictions. Ideally, you can get all the data from Twitter Search.
+The crawled data is not as *clean* as the one obtained by the APIs, but the benefits are you can get rid of the API's rate limits and restrictions. Ideally, you can get all the data from Twitter Search.
 
 **WARNING:** please be polite and follow the [crawler's politeness policy](https://en.wikipedia.org/wiki/Web_crawler#Politeness_policy).
  
@@ -30,5 +30,5 @@ It requires [Scrapy](http://scrapy.org/) and [PyMongo](https://api.mongodb.org/p
 
 4.  In you want to save the data to MongoDB, change the `ITEM_PIPELINES` in `TweetScraper/settings.py` from `TweetScraper.pipelines.SaveToFilePipeline` to `TweetScraper.pipelines.SaveToMongoPipeline`.
 
-# License and Citation #
+# License #
 TweetScraper is released under the [GNU GENERAL PUBLIC LICENSE, Version 2](https://github.com/jonbakerfish/TweetScraper/blob/master/LICENSE)
