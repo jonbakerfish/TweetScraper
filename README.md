@@ -24,7 +24,7 @@ It requires [Scrapy](http://scrapy.org/) and [PyMongo](https://api.mongodb.org/p
 
 		scrapy crawl TweetScraper -a queries=foo,#bar
 
-	where `queries` is a list of keywords seperated by comma (`,`). The queries can be any thing (keyword, hashtag, etc.) you want search in [Twitter Search](https://twitter.com/search-home). `TweetScraper` will crawl the search results of each query and save it's content and user information. You can also use the following operators in each query (from [Twitter Search](https://twitter.com/search-home)):
+	where `queries` is a list of keywords seperated by comma (`,`). The queries can be any thing (keyword, hashtag, etc.) you want to search in [Twitter Search](https://twitter.com/search-home). `TweetScraper` will crawl the search results of each query and save the tweet content and user information. You can also use the following operators in each query (from [Twitter Search](https://twitter.com/search-home)):
 	
 	| Operator | Finds tweets... |
 	| --- | --- |
