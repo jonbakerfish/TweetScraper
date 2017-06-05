@@ -10,7 +10,7 @@ class TweetItem(Item):
     datetime = Field() # post time
     text = Field()     # text content
     user_id = Field()  # user id
-    
+
     has_image = Field() # True/False, whether a tweet contains images
     images = Field()    # a list of image urls, empty if none
 
@@ -26,4 +26,3 @@ class UserItem(Item):
     name = Field()          # user name
     screen_name = Field()   # user screen name
     avatar = Field()        # avator url
-    

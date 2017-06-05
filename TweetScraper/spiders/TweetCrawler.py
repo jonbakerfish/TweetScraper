@@ -29,7 +29,7 @@ class TweetScraper(CrawlSpider):
     def start_requests(self):
         # generate request: https://twitter.com/search?q=[xxx] for each query
         for query in self.queries:
-            url = 'https://twitter.com/search?q=%s'%urllib.quote_plus(query)
+            url = 'https://twitter.com/search?q=%s' %urllib.quote_plus(query)
             yield http.Request(url, callback=self.parse_search_page)
 
 
@@ -106,7 +106,6 @@ class TweetScraper(CrawlSpider):
                 tweetItem['datetime'] = \
                     item.xpath(
                         './/div[@class="content"]/div[@class="stream-item-header"]/small[@class="time"]/a/span/@data-time').extract()[0]
-                
 
                 ### get photo
                 has_cards = item.xpath('.//@data-card-type').extract()
