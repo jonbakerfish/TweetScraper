@@ -67,7 +67,7 @@ class TweetScraper(CrawlSpider):
                 tweetItem['ID'] = ID[0]
 
                 ### get text content
-                tweetItem['text'] = '\n'.join(item.xpath('.//div[@class="js-tweet-text-container"]/p/text()').extract()).replace('# ', '#').replace('@ ', '@')
+                tweetItem['text'] = ' '.join(item.xpath('.//div[@class="js-tweet-text-container"]/p//text()').extract()).replace(' # ', '#').replace(' @ ', '@')
                 if tweetItem['text'] == '':
                     continue #skip no <p> tweet
 
