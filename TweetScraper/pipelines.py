@@ -6,7 +6,7 @@ import pymongo
 import json
 import os
 
-from TweetScraper.items import TweetItem, UserItem
+from TweetScraper.items import Tweet, User
 from TweetScraper.utils import mkdirs
 
 
@@ -25,7 +25,7 @@ class SaveToMongoPipeline(object):
 
 
     def process_item(self, item, spider):
-        if isinstance(item, TweetItem):
+        if isinstance(item, Tweet):
             dbItem = self.tweetCollection.find_one({'ID': item['ID']})
             if dbItem:
                 pass # simply skip existing items
@@ -37,7 +37,7 @@ class SaveToMongoPipeline(object):
                 self.tweetCollection.insert_one(dict(item))
                 logger.info("Add tweet:%s" %item['url'])
 
-        elif isinstance(item, UserItem):
+        elif isinstance(item, User):
             dbItem = self.userCollection.find_one({'ID': item['ID']})
             if dbItem:
                 pass # simply skip existing items
@@ -64,7 +64,7 @@ class SaveToFilePipeline(object):
 
 
     def process_item(self, item, spider):
-        if isinstance(item, TweetItem):
+        if isinstance(item, Tweet):
             savePath = os.path.join(self.saveTweetPath, item['ID'])
             if os.path.isfile(savePath):
                 pass # simply skip existing items
@@ -75,7 +75,7 @@ class SaveToFilePipeline(object):
                 self.save_to_file(item,savePath)
                 logger.info("Add tweet:%s" %item['url'])
 
-        elif isinstance(item, UserItem):
+        elif isinstance(item, User):
             savePath = os.path.join(self.saveUserPath, item['ID'])
             if os.path.isfile(savePath):
                 pass # simply skip existing items

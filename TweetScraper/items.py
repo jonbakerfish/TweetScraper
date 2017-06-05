@@ -4,7 +4,7 @@
 from scrapy import Item, Field
 
 
-class TweetItem(Item):
+class Tweet(Item):
     ID = Field()       # tweet id
     url = Field()      # tweet url
     datetime = Field() # post time
@@ -14,6 +14,7 @@ class TweetItem(Item):
 
     nbr_retweet = Field()
     nbr_favorite = Field()
+    nbr_reply = Field()
 
     has_image = Field() # True/False, whether a tweet contains images
     images = Field()    # a list of image urls, empty if none
@@ -25,7 +26,7 @@ class TweetItem(Item):
     medias = Field()    # a list of media
 
 
-class UserItem(Item):
+class User(Item):
     ID = Field()            # user id
     name = Field()          # user name
     screen_name = Field()   # user screen name
