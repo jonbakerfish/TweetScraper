@@ -47,7 +47,7 @@ class SaveToMongoPipeline(object):
                 # logger.info("Update user:%s"%dbItem['screen_name'])
             else:
                 self.userCollection.insert_one(dict(item))
-                    logger.info("Add user:%s" %item['screen_name']
+                logger.info("Add user:%s" %item['screen_name'])
 
         else:
             logger.info("Item type is not recognized! type = %s" %type(item))

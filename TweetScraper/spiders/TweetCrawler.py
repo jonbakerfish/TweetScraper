@@ -20,39 +20,15 @@ class TweetScraper(CrawlSpider):
     name = 'TweetScraper'
     allowed_domains = ['twitter.com']
 
-    def __init__(self, queries=''):
-        self.queries = queries.split(',')
+    def __init__(self, query=''):
+        self.query = query
         self.reScrollCursor = re.compile(r'data-min-position="([^"]+?)"')
         self.reRefreshCursor = re.compile(r'data-refresh-cursor="([^"]+?)"')
-
+        self.url = "https://twitter.com/i/search/timeline?&f=tweets&q=%s&src=typed&max_position=%s"
 
     def start_requests(self):
-        # generate request: https://twitter.com/search?q=[xxx] for each query
-        for query in self.queries:
-            url = 'https://twitter.com/search?q=%s' %urllib.quote_plus(query)
-            yield http.Request(url, callback=self.parse_search_page)
-
-
-    def parse_search_page(self, response):
-        # handle current page
-        for item in self.parse_tweets_block(response.body):
-            yield item
-
-        # get next page
-        tmp = self.reScrollCursor.search(response.body)
-        if tmp:
-            query = urlparse.parse_qs(urlparse.urlparse(response.request.url).query)['q'][0]
-            scroll_cursor = tmp.group(1)
-            url = 'https://twitter.com/i/search/timeline?q=%s&' \
-                  'include_available_features=1&include_entities=1&max_position=%s' % \
-                  (urllib.quote_plus(query), scroll_cursor)
-            yield http.Request(url, callback=self.parse_more_page)
-
-        # TODO: # get refresh page
-        # tmp = self.reRefreshCursor.search(response.body)
-        # if tmp:
-        #     query = urlparse.parse_qs(urlparse.urlparse(response.request.url).query)['q'][0]
-        #     refresh_cursor=tmp.group(1)
+        url = self.url %(urllib.quote_plus(self.query)[0], '')
+        yield http.Request(url, callback=self.parse_more_page)
 
 
     def parse_more_page(self, response):
@@ -63,21 +39,13 @@ class TweetScraper(CrawlSpider):
             yield item
 
         # get next page
-        query = urlparse.parse_qs(urlparse.urlparse(response.request.url).query)['q'][0]
         min_position = data['min_position']
-        url = 'https://twitter.com/i/search/timeline?q=%s&' \
-              'include_available_features=1&include_entities=1&max_position=%s' % \
-               (urllib.quote_plus(query), min_position)
+        url = self.url %(urllib.quote_plus(self.query), min_position)
         yield http.Request(url, callback=self.parse_more_page)
 
 
     def parse_tweets_block(self, html_page):
         page = Selector(text=html_page)
-
-        ### for tweets with media
-        items = page.xpath('//li[@data-item-type="tweet"]/ol[@role="presentation"]/li[@role="presentation"]/div')
-        for item in self.parse_tweet_item(items):
-            yield item
 
         ### for text only tweets
         items = page.xpath('//li[@data-item-type="tweet"]/div') 
@@ -87,25 +55,38 @@ class TweetScraper(CrawlSpider):
 
     def parse_tweet_item(self, items):
         for item in items:
-            logger.debug("Show tweet:\n%s"%item.xpath('.').extract()[0])
             try:
                 tweetItem = TweetItem()
                 userItem = UserItem()
+
+                tweetItem['usernameTweet'] = item.xpath('.//span[@class="username u-dir"]/b/text()').extract()[0]
 
                 ID = item.xpath('.//@data-tweet-id').extract()
                 if not ID:
                     continue
                 tweetItem['ID'] = ID[0]
+
                 ### get text content
-                tweetItem['text'] = '\n'.join(item.xpath('.//div[@class="content"]/p').xpath('.//.').extract())
+                tweetItem['text'] = '\n'.join(item.xpath('.//div[@class="js-tweet-text-container"]/p/text()').extract()).replace('# ', '#').replace('@ ', '@')
                 if tweetItem['text'] == '':
                     continue #skip no <p> tweet
 
                 ### get meta data
                 tweetItem['url'] = item.xpath('.//@data-permalink-path').extract()[0]
-                tweetItem['datetime'] = \
-                    item.xpath(
-                        './/div[@class="content"]/div[@class="stream-item-header"]/small[@class="time"]/a/span/@data-time').extract()[0]
+
+                nbr_retweet = item.xpath('.//button[@data-modal="ProfileTweet-retweet"]/div[2]/span/span/text()').extract()
+                if nbr_retweet:
+                    tweetItem['nbr_retweet'] = int(nbr_retweet[0])
+                else:
+                    tweetItem['nbr_retweet'] = 0
+
+                nbr_favorite = item.xpath('.//button[@class="ProfileTweet-actionButton js-actionButton js-actionFavorite"]/div[2]/span/span/text()').extract()
+                if nbr_favorite:
+                    tweetItem['nbr_favorite'] = int(nbr_favorite[0])
+                else:
+                    tweetItem['nbr_favorite'] = 0
+
+                tweetItem['datetime'] = item.xpath('.//div[@class="stream-item-header"]/small[@class="time"]/a/span/@data-time').extract()[0]
 
                 ### get photo
                 has_cards = item.xpath('.//@data-card-type').extract()
