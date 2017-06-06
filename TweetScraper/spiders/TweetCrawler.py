@@ -10,6 +10,7 @@ import time
 import logging
 import urllib
 import urlparse
+from datetime import datetime
 
 from TweetScraper.items import Tweet, User
 
@@ -22,13 +23,11 @@ class TweetScraper(CrawlSpider):
 
     def __init__(self, query='', crawl_user=False):
         self.query = query
-        print query
         self.url = "https://twitter.com/i/search/timeline?f=tweets&q=%s&src=typed&max_position=%s"
         self.crawl_user = crawl_user
 
     def start_requests(self):
         url = self.url %(urllib.quote(' '.join(self.query.split(','))), '')
-        print url
         yield http.Request(url, callback=self.parse_page)
 
 
@@ -93,7 +92,7 @@ class TweetScraper(CrawlSpider):
                 else:
                     tweet['nbr_reply'] = 0
 
-                tweet['datetime'] = item.xpath('.//div[@class="stream-item-header"]/small[@class="time"]/a/span/@data-time').extract()[0]
+                tweet['datetime'] = datetime.fromtimestamp(int(item.xpath('.//div[@class="stream-item-header"]/small[@class="time"]/a/span/@data-time').extract()[0])).strftime('%Y-%m-%d %H:%M:%S')
 
                 ### get photo
                 has_cards = item.xpath('.//@data-card-type').extract()

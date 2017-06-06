@@ -87,7 +87,7 @@ class SaveToFilePipeline(object):
                 logger.info("Add user:%s" %item['screen_name'])
 
         else:
-            logger.info("Item type is not recognised! type = %s" %type(item))
+            logger.info("Item type is not recognized! type = %s" %type(item))
 
 
     def save_to_file(self, item, fname):
