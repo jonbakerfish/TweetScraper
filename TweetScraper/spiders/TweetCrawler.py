@@ -21,9 +21,12 @@ class TweetScraper(CrawlSpider):
     name = 'TweetScraper'
     allowed_domains = ['twitter.com']
 
-    def __init__(self, query='', crawl_user=False):
+    def __init__(self, query='', crawl_user=False, top_tweet=False):
         self.query = query
-        self.url = "https://twitter.com/i/search/timeline?f=tweets&q=%s&src=typed&max_position=%s"
+        if top_tweet:
+            self.url = "https://twitter.com/i/search/timeline?q=%s&src=typed&max_position=%s"
+        else:
+            self.url = "https://twitter.com/i/search/timeline?f=tweets&q=%s&src=typed&max_position=%s"
         self.crawl_user = crawl_user
 
     def start_requests(self):
