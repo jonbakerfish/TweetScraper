@@ -40,7 +40,7 @@ class TweetScraper(CrawlSpider):
         # get next page
         min_position = data['min_position']
         url = self.url %(urllib.quote_plus(self.query), min_position)
-        yield http.Request(url, callback=self.parse_more_page)
+        yield http.Request(url, callback=self.parse_page)
 
 
     def parse_tweets_block(self, html_page):
