@@ -22,11 +22,13 @@ class TweetScraper(CrawlSpider):
 
     def __init__(self, query='', crawl_user=False):
         self.query = query
-        self.url = "https://twitter.com/i/search/timeline?&f=tweets&q=%s&src=typed&max_position=%s"
+        print query
+        self.url = "https://twitter.com/i/search/timeline?f=tweets&q=%s&src=typed&max_position=%s"
         self.crawl_user = crawl_user
 
     def start_requests(self):
-        url = self.url %(urllib.quote_plus(self.query)[0], '')
+        url = self.url %(urllib.quote(' '.join(self.query.split(','))), '')
+        print url
         yield http.Request(url, callback=self.parse_page)
 
 
@@ -39,7 +41,7 @@ class TweetScraper(CrawlSpider):
 
         # get next page
         min_position = data['min_position']
-        url = self.url %(urllib.quote_plus(self.query), min_position)
+        url = self.url %(urllib.quote(self.query), min_position)
         yield http.Request(url, callback=self.parse_page)
 
 
