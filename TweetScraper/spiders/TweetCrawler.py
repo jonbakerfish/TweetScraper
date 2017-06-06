@@ -128,6 +128,12 @@ class TweetScraper(CrawlSpider):
                         logger.debug('Not handle "data-card2-type":\n%s'%item.xpath('.').extract()[0])
 
 
+                is_reply = item.xpath('.//div[@class="ReplyingToContextBelowAuthor"]').extract()
+                tweet['is_reply'] = is_reply != []
+
+                is_retweet = item.xpath('.//span[@class="js-retweet-text"]').extract()
+                tweet['is_retweet'] = is_retweet != []
+
                 tweet['user_id'] = item.xpath('.//@data-user-id').extract()[0]
                 yield tweet
 
