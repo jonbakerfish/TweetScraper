@@ -22,9 +22,9 @@ It requires [Scrapy](http://scrapy.org/) and [PyMongo](https://api.mongodb.org/p
 
 2. In the root folder of this project, run command like: 
 
-		scrapy crawl TweetScraper -a queru=foo,#bar
+		scrapy crawl TweetScraper -a query=foo,#bar
 
-	where `queru` is a list of keywords seperated by comma (`,`). The query can be any thing (keyword, hashtag, etc.) you want to search in [Twitter Search](https://twitter.com/search-home). `TweetScraper` will crawl the search results of the query and save the tweet content and user information. You can also use the following operators in each query (from [Twitter Search](https://twitter.com/search-home)):
+	where `query` is a list of keywords seperated by comma (`,`). The query can be any thing (keyword, hashtag, etc.) you want to search in [Twitter Search](https://twitter.com/search-home). `TweetScraper` will crawl the search results of the query and save the tweet content and user information. You can also use the following operators in each query (from [Twitter Search](https://twitter.com/search-home)):
 	
 	| Operator | Finds tweets... |
 	| --- | --- |
