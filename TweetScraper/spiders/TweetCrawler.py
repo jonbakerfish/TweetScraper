@@ -142,6 +142,7 @@ class TweetScraper(CrawlSpider):
 
                 if self.crawl_user:
                     ### get user info
+                    user = User()
                     user['ID'] = tweet['user_id']
                     user['name'] = item.xpath('.//@data-name').extract()[0]
                     user['screen_name'] = item.xpath('.//@data-screen-name').extract()[0]
