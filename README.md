@@ -50,5 +50,10 @@ It requires [Scrapy](http://scrapy.org/) and [PyMongo](https://api.mongodb.org/p
 
 4.  In you want to save the data to MongoDB, change the `ITEM_PIPELINES` in `TweetScraper/settings.py` from `TweetScraper.pipelines.SaveToFilePipeline` to `TweetScraper.pipelines.SaveToMongoPipeline`.
 
+### Other parameters
+* `lang[DEFAULT='']` allow to choose the language of tweet scrapped. This is not part of the query parameters, it is a different part in the search API URL
+* `top_tweet[DEFAULT=False]`, if you want to query only top_tweets or all of them
+* `crawl_user[DEFAULT=False]`, if you want to crawl users, author's of tweets in the same time
+
 # License #
 TweetScraper is released under the [GNU GENERAL PUBLIC LICENSE, Version 2](https://github.com/jonbakerfish/TweetScraper/blob/master/LICENSE)
