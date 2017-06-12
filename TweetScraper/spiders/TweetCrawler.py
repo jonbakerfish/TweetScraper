@@ -1,4 +1,4 @@
-fom scrapy.linkextractors.sgml import SgmlLinkExtractor
+from scrapy.linkextractors.sgml import SgmlLinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.selector import Selector
 from scrapy.conf import settings
@@ -25,16 +25,16 @@ class TweetScraper(CrawlSpider):
 
         self.query = query
         self.url = "https://twitter.com/i/search/timeline?l={}".format(lang)
-	
+
         if not top_tweet:
             self.url = self.url + "&f=tweets"
-       	
-	self.url = self.url + "&q=%s&src=typed&max_position=%s"
+
+        self.url = self.url + "&q=%s&src=typed&max_position=%s"
 
         self.crawl_user = crawl_user
 
     def start_requests(self):
-        url = self.url %(urllib.quote(' '.join(self.query.split(','))))
+        url = self.url %(urllib.quote(' '.join(self.query.split(','))), '')
         yield http.Request(url, callback=self.parse_page)
 
 
