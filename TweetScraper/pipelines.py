@@ -35,7 +35,7 @@ class SaveToMongoPipeline(object):
                 # logger.info("Update tweet:%s"%dbItem['url'])
             else:
                 self.tweetCollection.insert_one(dict(item))
-                logger.info("Add tweet:%s" %item['url'])
+                logger.debug("Add tweet:%s" %item['url'])
 
         elif isinstance(item, User):
             dbItem = self.userCollection.find_one({'ID': item['ID']})
@@ -47,7 +47,7 @@ class SaveToMongoPipeline(object):
                 # logger.info("Update user:%s"%dbItem['screen_name'])
             else:
                 self.userCollection.insert_one(dict(item))
-                logger.info("Add user:%s" %item['screen_name'])
+                logger.debug("Add user:%s" %item['screen_name'])
 
         else:
             logger.info("Item type is not recognized! type = %s" %type(item))
@@ -73,7 +73,7 @@ class SaveToFilePipeline(object):
                 # logger.info("Update tweet:%s"%dbItem['url'])
             else:
                 self.save_to_file(item,savePath)
-                logger.info("Add tweet:%s" %item['url'])
+                logger.debug("Add tweet:%s" %item['url'])
 
         elif isinstance(item, User):
             savePath = os.path.join(self.saveUserPath, item['ID'])
@@ -84,7 +84,7 @@ class SaveToFilePipeline(object):
                 # logger.info("Update user:%s"%dbItem['screen_name'])
             else:
                 self.save_to_file(item, savePath)
-                logger.info("Add user:%s" %item['screen_name'])
+                logger.debug("Add user:%s" %item['screen_name'])
 
         else:
             logger.info("Item type is not recognized! type = %s" %type(item))
