@@ -1,4 +1,4 @@
-from scrapy.linkextractors.sgml import SgmlLinkExtractor
+fom scrapy.linkextractors.sgml import SgmlLinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.selector import Selector
 from scrapy.conf import settings
@@ -22,6 +22,7 @@ class TweetScraper(CrawlSpider):
     allowed_domains = ['twitter.com']
 
     def __init__(self, query='', lang='', crawl_user=False, top_tweet=False):
+
         self.query = query
         self.url = "https://twitter.com/i/search/timeline?l={}".format(lang)
 	
@@ -33,7 +34,7 @@ class TweetScraper(CrawlSpider):
         self.crawl_user = crawl_user
 
     def start_requests(self):
-        url = self.url %(urllib.quote(' '.join(self.query.split(','))), '')
+        url = self.url %(urllib.quote(' '.join(self.query.split(','))))
         yield http.Request(url, callback=self.parse_page)
 
 
@@ -80,19 +81,19 @@ class TweetScraper(CrawlSpider):
                 ### get meta data
                 tweet['url'] = item.xpath('.//@data-permalink-path').extract()[0]
 
-                nbr_retweet = item.xpath('.//button[@data-modal="ProfileTweet-retweet"]/div[2]/span/span/text()').extract()
+                nbr_retweet = item.xpath('.//button[@data-modal="ProfileTweet-retweet"]/span/span/text()').extract()
                 if nbr_retweet:
                     tweet['nbr_retweet'] = int(nbr_retweet[0])
                 else:
                     tweet['nbr_retweet'] = 0
 
-                nbr_favorite = item.xpath('.//button[@class="ProfileTweet-actionButton js-actionButton js-actionFavorite"]/div[2]/span/span/text()').extract()
+                nbr_favorite = item.xpath('.//button[@class="ProfileTweet-actionButton js-actionButton js-actionFavorite"]/span/span/text()').extract()
                 if nbr_favorite:
                     tweet['nbr_favorite'] = int(nbr_favorite[0])
                 else:
                     tweet['nbr_favorite'] = 0
 
-                nbr_reply = item.xpath('.//button[@class="ProfileTweet-actionButton js-actionButton js-actionReply"]/div[2]/span/span/text()').extract()
+                nbr_reply = item.xpath('.//button[@class="ProfileTweet-actionButton js-actionButton js-actionReply"]/span/span/text()').extract()
                 if nbr_reply:
                     tweet['nbr_reply'] = int(nbr_reply[0])
                 else:
