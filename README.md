@@ -55,5 +55,12 @@ It requires [Scrapy](http://scrapy.org/) and [PyMongo](https://api.mongodb.org/p
 * `top_tweet[DEFAULT=False]`, if you want to query only top_tweets or all of them
 * `crawl_user[DEFAULT=False]`, if you want to crawl users, author's of tweets in the same time
 
+E.g.: `scrapy crawl TweetScraper -a query=foo -a crawl_user=True`
+
+
+# Acknowledgement #
+Keeping the crawler up to date requires continuous efforts, we thank all the [contributors](https://github.com/jonbakerfish/TweetScraper/graphs/contributors) for their valuable work.
+
+
 # License #
 TweetScraper is released under the [GNU GENERAL PUBLIC LICENSE, Version 2](https://github.com/jonbakerfish/TweetScraper/blob/master/LICENSE)
