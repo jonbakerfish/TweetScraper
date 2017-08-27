@@ -55,7 +55,7 @@ class TweetScraper(CrawlSpider):
         page = Selector(text=html_page)
 
         ### for text only tweets
-        items = page.xpath('//li[@data-item-type="tweet"]/div') 
+        items = page.xpath('//li[@data-item-type="tweet"]/div')
         for item in self.parse_tweet_item(items):
             yield item
 
@@ -81,19 +81,19 @@ class TweetScraper(CrawlSpider):
                 ### get meta data
                 tweet['url'] = item.xpath('.//@data-permalink-path').extract()[0]
 
-                nbr_retweet = item.xpath('.//button[@data-modal="ProfileTweet-retweet"]/span/span/text()').extract()
+                nbr_retweet = item.css('span.ProfileTweet-action--retweet > span.ProfileTweet-actionCount').xpath('@data-tweet-stat-count').extract()
                 if nbr_retweet:
                     tweet['nbr_retweet'] = int(nbr_retweet[0])
                 else:
                     tweet['nbr_retweet'] = 0
 
-                nbr_favorite = item.xpath('.//button[@class="ProfileTweet-actionButton js-actionButton js-actionFavorite"]/span/span/text()').extract()
+                nbr_favorite = item.css('span.ProfileTweet-action--favorite > span.ProfileTweet-actionCount').xpath('@data-tweet-stat-count').extract()
                 if nbr_favorite:
                     tweet['nbr_favorite'] = int(nbr_favorite[0])
                 else:
                     tweet['nbr_favorite'] = 0
 
-                nbr_reply = item.xpath('.//button[@class="ProfileTweet-actionButton js-actionButton js-actionReply"]/span/span/text()').extract()
+                nbr_reply = item.css('span.ProfileTweet-action--reply > span.ProfileTweet-actionCount').xpath('@data-tweet-stat-count').extract()
                 if nbr_reply:
                     tweet['nbr_reply'] = int(nbr_reply[0])
                 else:
