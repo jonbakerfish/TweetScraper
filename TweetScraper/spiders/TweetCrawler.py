@@ -7,13 +7,17 @@ import re
 import json
 import time
 import logging
-import urllib
+try:
+    from urllib import quote  # Python 2.X
+except ImportError:
+    from urllib.parse import quote  # Python 3+
+
 from datetime import datetime
 
 from TweetScraper.items import Tweet, User
 
-
 logger = logging.getLogger(__name__)
+
 
 class TweetScraper(CrawlSpider):
     name = 'TweetScraper'
@@ -32,9 +36,8 @@ class TweetScraper(CrawlSpider):
         self.crawl_user = crawl_user
 
     def start_requests(self):
-        url = self.url %(urllib.quote(' '.join(self.query.split(','))), '')
+        url = self.url % (quote(' '.join(self.query.split(','))), '')
         yield http.Request(url, callback=self.parse_page)
-
 
     def parse_page(self, response):
         # inspect_response(response)
@@ -45,9 +48,8 @@ class TweetScraper(CrawlSpider):
 
         # get next page
         min_position = data['min_position']
-        url = self.url %(urllib.quote(self.query), min_position)
+        url = self.url % (quote(self.query), min_position)
         yield http.Request(url, callback=self.parse_page)
-
 
     def parse_tweets_block(self, html_page):
         page = Selector(text=html_page)
@@ -56,7 +58,6 @@ class TweetScraper(CrawlSpider):
         items = page.xpath('//li[@data-item-type="tweet"]/div')
         for item in self.parse_tweet_item(items):
             yield item
-
 
     def parse_tweet_item(self, items):
         for item in items:
@@ -71,7 +72,10 @@ class TweetScraper(CrawlSpider):
                 tweet['ID'] = ID[0]
 
                 ### get text content
-                tweet['text'] = ' '.join(item.xpath('.//div[@class="js-tweet-text-container"]/p//text()').extract()).replace(' # ', '#').replace(' @ ', '@')
+                tweet['text'] = ' '.join(
+                    item.xpath('.//div[@class="js-tweet-text-container"]/p//text()').extract()).replace(' # ',
+                                                                                                        '#').replace(
+                    ' @ ', '@')
                 if tweet['text'] == '':
                     # If there is not text, we ignore the tweet
                     continue
@@ -79,25 +83,30 @@ class TweetScraper(CrawlSpider):
                 ### get meta data
                 tweet['url'] = item.xpath('.//@data-permalink-path').extract()[0]
 
-                nbr_retweet = item.css('span.ProfileTweet-action--retweet > span.ProfileTweet-actionCount').xpath('@data-tweet-stat-count').extract()
+                nbr_retweet = item.css('span.ProfileTweet-action--retweet > span.ProfileTweet-actionCount').xpath(
+                    '@data-tweet-stat-count').extract()
                 if nbr_retweet:
                     tweet['nbr_retweet'] = int(nbr_retweet[0])
                 else:
                     tweet['nbr_retweet'] = 0
 
-                nbr_favorite = item.css('span.ProfileTweet-action--favorite > span.ProfileTweet-actionCount').xpath('@data-tweet-stat-count').extract()
+                nbr_favorite = item.css('span.ProfileTweet-action--favorite > span.ProfileTweet-actionCount').xpath(
+                    '@data-tweet-stat-count').extract()
                 if nbr_favorite:
                     tweet['nbr_favorite'] = int(nbr_favorite[0])
                 else:
                     tweet['nbr_favorite'] = 0
 
-                nbr_reply = item.css('span.ProfileTweet-action--reply > span.ProfileTweet-actionCount').xpath('@data-tweet-stat-count').extract()
+                nbr_reply = item.css('span.ProfileTweet-action--reply > span.ProfileTweet-actionCount').xpath(
+                    '@data-tweet-stat-count').extract()
                 if nbr_reply:
                     tweet['nbr_reply'] = int(nbr_reply[0])
                 else:
                     tweet['nbr_reply'] = 0
 
-                tweet['datetime'] = datetime.fromtimestamp(int(item.xpath('.//div[@class="stream-item-header"]/small[@class="time"]/a/span/@data-time').extract()[0])).strftime('%Y-%m-%d %H:%M:%S')
+                tweet['datetime'] = datetime.fromtimestamp(int(
+                    item.xpath('.//div[@class="stream-item-header"]/small[@class="time"]/a/span/@data-time').extract()[
+                        0])).strftime('%Y-%m-%d %H:%M:%S')
 
                 ### get photo
                 has_cards = item.xpath('.//@data-card-type').extract()
@@ -105,7 +114,7 @@ class TweetScraper(CrawlSpider):
                     tweet['has_image'] = True
                     tweet['images'] = item.xpath('.//*/div/@data-image-url').extract()
                 elif has_cards:
-                    logger.debug('Not handle "data-card-type":\n%s'%item.xpath('.').extract()[0])
+                    logger.debug('Not handle "data-card-type":\n%s' % item.xpath('.').extract()[0])
 
                 ### get animated_gif
                 has_cards = item.xpath('.//@data-card2-type').extract()
@@ -126,12 +135,11 @@ class TweetScraper(CrawlSpider):
                         tweet['has_media'] = True
                         tweet['medias'] = item.xpath('.//*/div/@data-card-url').extract()
                     elif has_cards[0] == '__entity_video':
-                        pass # TODO
+                        pass  # TODO
                         # tweet['has_media'] = True
                         # tweet['medias'] = item.xpath('.//*/div/@data-src').extract()
-                    else: # there are many other types of card2 !!!!
-                        logger.debug('Not handle "data-card2-type":\n%s'%item.xpath('.').extract()[0])
-
+                    else:  # there are many other types of card2 !!!!
+                        logger.debug('Not handle "data-card2-type":\n%s' % item.xpath('.').extract()[0])
 
                 is_reply = item.xpath('.//div[@class="ReplyingToContextBelowAuthor"]').extract()
                 tweet['is_reply'] = is_reply != []
@@ -152,7 +160,7 @@ class TweetScraper(CrawlSpider):
                         item.xpath('.//div[@class="content"]/div[@class="stream-item-header"]/a/img/@src').extract()[0]
                     yield user
             except:
-                logger.error("Error tweet:\n%s"%item.xpath('.').extract()[0])
+                logger.error("Error tweet:\n%s" % item.xpath('.').extract()[0])
                 # raise
 
     def extract_one(self, selector, xpath, default=None):
