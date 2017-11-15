@@ -36,11 +36,11 @@ class TweetScraper(CrawlSpider):
         self.crawl_user = crawl_user
 
     def start_requests(self):
-        url = self.url % (quote(' '.join(self.query.split(','))), '')
+        url = self.url % (quote(self.query), '')
         yield http.Request(url, callback=self.parse_page)
 
     def parse_page(self, response):
-        # inspect_response(response)
+        # inspect_response(response, self)
         # handle current page
         data = json.loads(response.body.decode("utf-8"))
         for item in self.parse_tweets_block(data['items_html']):
