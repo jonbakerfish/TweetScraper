@@ -140,8 +140,6 @@ class SavetoMySQLPipeline(object):
         insert_query += " VALUES ( '" + ID + "', '" + url + "', '"
         insert_query += datetime + "', '" + text + "', '" + user_id + "', '" + username + "' )"
 
-        print insert_query
-
         try:
             print "Inserting..."
             self.cursor.execute(insert_query)
@@ -153,12 +151,9 @@ class SavetoMySQLPipeline(object):
 
 
     def process_item(self, item, spider):
-        print "now only made it to process item"
         if isinstance(item, Tweet):
-            print item['ID']
             dbItem = self.find_one('user_id', item['ID'])
             if dbItem:
-                print "skipping"
                 pass # simply skip existing items
                 ### or you can update the tweet, if you don't want to skip:
                 # dbItem.update(dict(item))
