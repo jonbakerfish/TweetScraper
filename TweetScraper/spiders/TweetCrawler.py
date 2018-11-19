@@ -48,6 +48,7 @@ class TweetScraper(CrawlSpider):
 
         # get next page
         min_position = data['min_position']
+        min_position = min_position.replace("+","%2B")
         url = self.url % (quote(self.query), min_position)
         yield http.Request(url, callback=self.parse_page)
 
