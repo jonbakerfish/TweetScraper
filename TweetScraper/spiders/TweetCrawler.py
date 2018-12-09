@@ -7,6 +7,7 @@ import re
 import json
 import time
 import logging
+from lxml import html
 try:
     from urllib import quote  # Python 2.X
 except ImportError:
@@ -73,10 +74,36 @@ class TweetScraper(CrawlSpider):
                 tweet['ID'] = ID[0]
 
                 ### get text content
-                tweet['text'] = ' '.join(
-                    item.xpath('.//div[@class="js-tweet-text-container"]/p//text()').extract()).replace(' # ',
-                                                                                                        '#').replace(
-                    ' @ ', '@')
+                p_txt=item.xpath('.//div[@class="js-tweet-text-container"]/p').extract()
+                p_txt=" ".join(p_txt)
+                p = html.fromstring(p_txt)
+                a_links=p.xpath("//p/a")
+                for a in a_links:
+                    if 'twitter-atreply' in a.attrib['class']:
+                        # for getting @xyz mentions
+                        txt = "@" + a.attrib['href'].split("/")[1]
+                        for child in list(a):
+                            a.remove(child)
+                        a.text = txt
+                    elif 'twitter-hashtag' in a.attrib['class']:
+                        # for getting #xyz hashtag
+                        txt = "#" + a.attrib['href'].split("?")[0].split("/")[2]
+                        for child in list(a):
+                            a.remove(child)
+                        a.text = txt
+                    elif 'twitter-timeline-link u-hidden' in a.attrib['class']:
+                        # For removing pic.twitter.... link that sometimes comes up in the bottom of a tweet
+                        for child in list(a):
+                            a.remove(child)
+                        a.text = ""
+                    elif 'twitter-timeline-link' in a.attrib['class'] and 'data-expanded-url' in a.attrib:
+                        # for getting embedding links of type http[s]://xyz.com
+                        txt = a.attrib['data-expanded-url']
+                        for child in list(a):
+                            a.remove(child)
+                        a.text = txt
+                text=p.xpath("//p//text()")
+                tweet['text'] = ' '.join(text)
                 if tweet['text'] == '':
                     # If there is not text, we ignore the tweet
                     continue
