@@ -19,7 +19,8 @@ logger = logging.getLogger(__name__)
 class SaveToMongoPipeline(object):
 
     ''' pipeline that save data to mongodb '''
-    def __init__(self):
+    def open_spider(self, spider):
+        settings = spider.settings
         connection = pymongo.MongoClient(settings['MONGODB_SERVER'], settings['MONGODB_PORT'])
         db = connection[settings['MONGODB_DB']]
         self.tweetCollection = db[settings['MONGODB_TWEET_COLLECTION']]
@@ -166,7 +167,8 @@ class SavetoMySQLPipeline(object):
 
 class SaveToFilePipeline(object):
     ''' pipeline that save data to disk '''
-    def __init__(self):
+    def open_spider(self, spider):
+        settings = spider.settings
         self.saveTweetPath = settings['SAVE_TWEET_PATH']
         self.saveUserPath = settings['SAVE_USER_PATH']
         mkdirs(self.saveTweetPath) # ensure the path exists
