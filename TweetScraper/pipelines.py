@@ -62,13 +62,13 @@ class SavetoMySQLPipeline(object):
     ''' pipeline that save data to mysql '''
     def __init__(self):
         # connect to mysql server
-        user = raw_input("MySQL User: ")
-        pwd = raw_input("Password: ")
+        user = input("MySQL User: ")
+        pwd = input("Password: ")
         self.cnx = mysql.connector.connect(user=user, password=pwd,
                                 host='localhost',
                                 database='tweets', buffered=True)
         self.cursor = self.cnx.cursor()
-        self.table_name = raw_input("Table name: ")
+        self.table_name = input("Table name: ")
         create_table_query =   "CREATE TABLE `" + self.table_name + "` (\
                 `ID` CHAR(20) NOT NULL,\
                 `url` VARCHAR(140) NOT NULL,\
@@ -134,12 +134,18 @@ class SavetoMySQLPipeline(object):
         username = item['usernameTweet']
         datetime = item['datetime']
 
-        insert_query =  "INSERT INTO " + self.table_name + " (ID, url, datetime, text, user_id, usernameTweet )"
-        insert_query += " VALUES ( '" + ID + "', '" + url + "', '"
-        insert_query += datetime + "', '" + text + "', '" + user_id + "', '" + username + "' )"
+        insert_query =  'INSERT INTO ' + self.table_name + ' (ID, url, datetime, text, user_id, usernameTweet )'
+        insert_query += ' VALUES ( %s, %s, %s, %s, %s, %s)'
 
         try:
-            self.cursor.execute(insert_query)
+            self.cursor.execute(insert_query, (
+                ID,
+                url,
+                datetime,
+                text,
+                user_id,
+                username
+                ))
         except mysql.connector.Error as err:
             logger.info(err.msg)
         else:
