@@ -62,13 +62,13 @@ class SavetoMySQLPipeline(object):
     ''' pipeline that save data to mysql '''
     def __init__(self):
         # connect to mysql server
-        user = raw_input("MySQL User: ")
-        pwd = raw_input("Password: ")
+        user = input("MySQL User: ")
+        pwd = input("Password: ")
         self.cnx = mysql.connector.connect(user=user, password=pwd,
                                 host='localhost',
                                 database='tweets', buffered=True)
         self.cursor = self.cnx.cursor()
-        self.table_name = raw_input("Table name: ")
+        self.table_name = input("Table name: ")
         create_table_query =   "CREATE TABLE `" + self.table_name + "` (\
                 `ID` CHAR(20) NOT NULL,\
                 `url` VARCHAR(140) NOT NULL,\
