@@ -23,7 +23,7 @@ class TweetScraper(CrawlSpider):
     name = 'TweetScraper'
     allowed_domains = ['twitter.com']
 
-    def __init__(self, query='', lang='', crawl_user=False, top_tweet=False):
+    def __init__(self, query='', lang='', path='',crawl_user=False, top_tweet=False):
 
         self.query = query
         self.url = "https://twitter.com/i/search/timeline?l={}".format(lang)
@@ -34,6 +34,10 @@ class TweetScraper(CrawlSpider):
         self.url = self.url + "&q=%s&src=typed&max_position=%s"
 
         self.crawl_user = crawl_user
+	
+        if path != '':
+            settings['SAVE_TWEET_PATH'] = path+'/tweet'
+            settings['SAVE_USER_PATH']  = path+'/user'
 
     def start_requests(self):
         url = self.url % (quote(self.query), '')
