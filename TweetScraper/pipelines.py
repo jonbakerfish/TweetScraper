@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from scrapy.exceptions import DropItem
-from scrapy.conf import settings
+from scrapy.utils.project import get_project_settings
 import logging
 import pymongo
 import json
@@ -13,6 +13,7 @@ from mysql.connector import errorcode
 from TweetScraper.items import Tweet, User
 from TweetScraper.utils import mkdirs
 
+SETTINGS = get_project_settings()
 
 logger = logging.getLogger(__name__)
 
@@ -20,10 +21,10 @@ class SaveToMongoPipeline(object):
 
     ''' pipeline that save data to mongodb '''
     def __init__(self):
-        connection = pymongo.MongoClient(settings['MONGODB_SERVER'], settings['MONGODB_PORT'])
-        db = connection[settings['MONGODB_DB']]
-        self.tweetCollection = db[settings['MONGODB_TWEET_COLLECTION']]
-        self.userCollection = db[settings['MONGODB_USER_COLLECTION']]
+        connection = pymongo.MongoClient(SETTINGS['MONGODB_SERVER'], SETTINGS['MONGODB_PORT'])
+        db = connection[SETTINGS['MONGODB_DB']]
+        self.tweetCollection = db[SETTINGS['MONGODB_TWEET_COLLECTION']]
+        self.userCollection = db[SETTINGS['MONGODB_USER_COLLECTION']]
         self.tweetCollection.ensure_index([('ID', pymongo.ASCENDING)], unique=True, dropDups=True)
         self.userCollection.ensure_index([('ID', pymongo.ASCENDING)], unique=True, dropDups=True)
 
@@ -169,8 +170,8 @@ class SavetoMySQLPipeline(object):
 class SaveToFilePipeline(object):
     ''' pipeline that save data to disk '''
     def __init__(self):
-        self.saveTweetPath = settings['SAVE_TWEET_PATH']
-        self.saveUserPath = settings['SAVE_USER_PATH']
+        self.saveTweetPath = SETTINGS['SAVE_TWEET_PATH']
+        self.saveUserPath = SETTINGS['SAVE_USER_PATH']
         mkdirs(self.saveTweetPath) # ensure the path exists
         mkdirs(self.saveUserPath)
 
