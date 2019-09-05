@@ -136,10 +136,17 @@ class SavetoMySQLPipeline(object):
 
         insert_query =  'INSERT INTO ' + self.table_name + ' (ID, url, datetime, text, user_id, usernameTweet )'
         insert_query += ' VALUES ( %s, %s, %s, %s, %s, %s)'
+        insert_query += ' ON DUPLICATE KEY UPDATE'
+        insert_query += ' url = %s, datetime = %s, text= %s, user_id = %s, usernameTweet = %s'
 
         try:
             self.cursor.execute(insert_query, (
                 ID,
+                url,
+                datetime,
+                text,
+                user_id,
+                username,
                 url,
                 datetime,
                 text,
@@ -151,19 +158,10 @@ class SavetoMySQLPipeline(object):
         else:
             self.cnx.commit()
 
-
     def process_item(self, item, spider):
         if isinstance(item, Tweet):
-            dbItem = self.find_one('user_id', item['ID'])
-            if dbItem:
-                pass # simply skip existing items
-                ### or you can update the tweet, if you don't want to skip:
-                # dbItem.update(dict(item))
-                # self.tweetCollection.save(dbItem)
-                # logger.info("Update tweet:%s"%dbItem['url'])
-            else:
-                self.insert_one(dict(item))
-                logger.debug("Add tweet:%s" %item['url'])
+           self.insert_one(dict(item))  # Item is inserted or updated.
+           logger.debug("Add tweet:%s" %item['url'])
 
 
 class SaveToFilePipeline(object):
