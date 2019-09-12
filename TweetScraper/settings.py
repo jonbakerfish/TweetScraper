@@ -27,4 +27,9 @@ MONGODB_DB = "TweetScraper"        # database name to save the crawled data
 MONGODB_TWEET_COLLECTION = "tweet" # collection name to save tweets
 MONGODB_USER_COLLECTION = "user"   # collection name to save users
 
-
+#settings for mysql
+MYSQL_SERVER = "127.0.0.1"
+MYSQL_DB     = "TweetScraper"
+MYSQL_TABLE  = "scraper" # the table will be created automatically
+MYSQL_USER   = ""        # MySQL user to use (should have INSERT access granted to the Database/Table
+MYSQL_PWD    = ""        # MySQL user's password

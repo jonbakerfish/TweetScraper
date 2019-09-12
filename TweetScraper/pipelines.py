@@ -63,13 +63,14 @@ class SavetoMySQLPipeline(object):
     ''' pipeline that save data to mysql '''
     def __init__(self):
         # connect to mysql server
-        user = input("MySQL User: ")
-        pwd = input("Password: ")
-        self.cnx = mysql.connector.connect(user=user, password=pwd,
-                                host='localhost',
-                                database='tweets', buffered=True)
+        self.cnx = mysql.connector.connect(
+            user=SETTINGS["MYSQL_USER"],
+            password=SETTINGS["MYSQL_PWD"],
+            host=SETTINGS["MYSQL_SERVER"],
+            database=SETTINGS["MYSQL_DB"],
+            buffered=True)
         self.cursor = self.cnx.cursor()
-        self.table_name = input("Table name: ")
+        self.table_name = SETTINGS["MYSQL_TABLE"]
         create_table_query =   "CREATE TABLE `" + self.table_name + "` (\
                 `ID` CHAR(20) NOT NULL,\
                 `url` VARCHAR(140) NOT NULL,\
@@ -92,7 +93,7 @@ class SavetoMySQLPipeline(object):
             val = self.cursor.execute(select_query)
         except mysql.connector.Error as err:
             return False
-        
+
         if (val == None):
             return False
         else:
