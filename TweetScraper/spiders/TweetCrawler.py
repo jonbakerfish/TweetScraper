@@ -73,7 +73,7 @@ class TweetScraper(CrawlSpider):
 
                 ### get text content
                 tweet['text'] = ' '.join(
-                    item.xpath('.//div[@class="js-tweet-text-container"]/p//text()').extract()).replace(' # ',
+                    item.xpath('.//div[@class="js-tweet-text-container"]/p//text()|.//div[@class="js-tweet-text-container"]/p//img/@alt').extract()).replace(' # ',
                                                                                                         '#').replace(
                     ' @ ', '@')
                 if tweet['text'] == '':
