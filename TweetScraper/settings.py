@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # !!! # Crawl responsibly by identifying yourself (and your website/e-mail) on the user-agent
-USER_AGENT = 'TweetScraper'
+USER_AGENT = 'khoerul271099@gmail.com'
 
 # settings for spiders
 BOT_NAME = 'TweetScraper'
@@ -11,9 +11,9 @@ DOWNLOAD_HANDLERS = {'s3': None,} # from http://stackoverflow.com/a/31233576/229
 SPIDER_MODULES = ['TweetScraper.spiders']
 NEWSPIDER_MODULE = 'TweetScraper.spiders'
 ITEM_PIPELINES = {
-    'TweetScraper.pipelines.SaveToFilePipeline':100,
+    #'TweetScraper.pipelines.SaveToFilePipeline':100,
     #'TweetScraper.pipelines.SaveToMongoPipeline':100, # replace `SaveToFilePipeline` with this to use MongoDB
-    #'TweetScraper.pipelines.SavetoMySQLPipeline':100, # replace `SaveToFilePipeline` with this to use MySQL
+    'TweetScraper.pipelines.SavetoMySQLPipeline':100, # replace `SaveToFilePipeline` with this to use MySQL
 }
 
 # settings for where to save data on disk
@@ -28,8 +28,8 @@ MONGODB_TWEET_COLLECTION = "tweet" # collection name to save tweets
 MONGODB_USER_COLLECTION = "user"   # collection name to save users
 
 #settings for mysql
-MYSQL_SERVER = "127.0.0.1"
+MYSQL_SERVER = "localhost"
 MYSQL_DB     = "TweetScraper"
 MYSQL_TABLE  = "scraper" # the table will be created automatically
-MYSQL_USER   = ""        # MySQL user to use (should have INSERT access granted to the Database/Table
+MYSQL_USER   = "root"        # MySQL user to use (should have INSERT access granted to the Database/Table
 MYSQL_PWD    = ""        # MySQL user's password

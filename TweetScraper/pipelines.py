@@ -5,6 +5,7 @@ import logging
 import pymongo
 import json
 import os
+import io
 
 # for mysql
 import mysql.connector
@@ -75,9 +76,12 @@ class SavetoMySQLPipeline(object):
                 `ID` CHAR(20) NOT NULL,\
                 `url` VARCHAR(140) NOT NULL,\
                 `datetime` VARCHAR(22),\
-                `text` VARCHAR(280),\
+                `text` text,\
                 `user_id` CHAR(20) NOT NULL,\
-                `usernameTweet` VARCHAR(20) NOT NULL\
+                `usernameTweet` VARCHAR(20) NOT NULL,\
+                `fav` VARCHAR(20) NOT NULL,\
+                `retweet` VARCHAR(20) NOT NULL,\
+                `reply` VARCHAR(20) NOT NULL\
                 )"
 
         try:
@@ -106,6 +110,9 @@ class SavetoMySQLPipeline(object):
         text = item['text']
         user_id = item['user_id']
         username = item['usernameTweet']
+        fav = item['nbr_favorite']
+        retweet = item['nbr_retweet']
+        reply = item['nbr_reply']
 
         if (ID is None):
             return False
@@ -118,6 +125,12 @@ class SavetoMySQLPipeline(object):
         elif (username is None):
             return False
         elif (datetime is None):
+            return False
+        elif (fav is None):
+            return False
+        elif (retweet is None):
+            return False
+        elif (reply is None):
             return False
         else:
             return True
@@ -135,11 +148,14 @@ class SavetoMySQLPipeline(object):
         text = item['text']
         username = item['usernameTweet']
         datetime = item['datetime']
+        fav = item['nbr_favorite']
+        retweet = item['nbr_retweet']
+        reply = item['nbr_reply']
 
-        insert_query =  'INSERT INTO ' + self.table_name + ' (ID, url, datetime, text, user_id, usernameTweet )'
-        insert_query += ' VALUES ( %s, %s, %s, %s, %s, %s)'
+        insert_query =  'INSERT INTO ' + self.table_name + ' (ID, url, datetime, text, user_id, usernameTweet, fav, retweet, reply )'
+        insert_query += ' VALUES ( %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         insert_query += ' ON DUPLICATE KEY UPDATE'
-        insert_query += ' url = %s, datetime = %s, text= %s, user_id = %s, usernameTweet = %s'
+        insert_query += ' url = %s, datetime = %s, text= %s, user_id = %s, usernameTweet = %s, fav = %s, retweet = %s, reply = %s'
 
         try:
             self.cursor.execute(insert_query, (
@@ -149,11 +165,17 @@ class SavetoMySQLPipeline(object):
                 text,
                 user_id,
                 username,
+                fav,
+                retweet,
+                reply,
                 url,
                 datetime,
                 text,
                 user_id,
-                username
+                username,
+                fav,
+                retweet,
+                reply
                 ))
         except mysql.connector.Error as err:
             logger.info(err.msg)
@@ -162,8 +184,8 @@ class SavetoMySQLPipeline(object):
 
     def process_item(self, item, spider):
         if isinstance(item, Tweet):
-           self.insert_one(dict(item))  # Item is inserted or updated.
-           logger.debug("Add tweet:%s" %item['url'])
+            self.insert_one(dict(item))  # Item is inserted or updated.
+            logger.debug("Add tweet:%s" %item['url'])
 
 
 class SaveToFilePipeline(object):
@@ -207,5 +229,5 @@ class SaveToFilePipeline(object):
                 item - a dict like object
                 fname - where to save
         '''
-        with open(fname,'w', encoding='utf-8') as f:
+        with io.open(fname,'w', encoding='utf-8') as f:
             json.dump(dict(item), f, ensure_ascii=False)
