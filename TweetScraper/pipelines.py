@@ -6,11 +6,8 @@ import pymongo
 import json
 import os
 
-# for mysql
-import mysql.connector
-from mysql.connector import errorcode
 
-from TweetScraper.items import Tweet, User
+from TweetScraper.items import Tweet, User, Conversa
 from TweetScraper.utils import mkdirs
 
 SETTINGS = get_project_settings()
@@ -25,9 +22,10 @@ class SaveToMongoPipeline(object):
         db = connection[SETTINGS['MONGODB_DB']]
         self.tweetCollection = db[SETTINGS['MONGODB_TWEET_COLLECTION']]
         self.userCollection = db[SETTINGS['MONGODB_USER_COLLECTION']]
-        self.tweetCollection.ensure_index([('ID', pymongo.ASCENDING)], unique=True, dropDups=True)
-        self.userCollection.ensure_index([('ID', pymongo.ASCENDING)], unique=True, dropDups=True)
-
+        self.conversaCollection = db[SETTINGS['MONGODB_CONVERSA_COLLECTION']]
+        '''self.tweetCollection.ensure_index([('_id', pymongo.ASCENDING)], unique=True, dropDups=True)
+        self.userCollection.ensure_index([('_id', pymongo.ASCENDING)], unique=True, dropDups=True)
+        self.conversaCollection.ensure_index([('_id', pymongo.ASCENDING)], unique=True, dropDups=True)'''
 
     def process_item(self, item, spider):
         if isinstance(item, Tweet):
@@ -53,117 +51,16 @@ class SaveToMongoPipeline(object):
             else:
                 self.userCollection.insert_one(dict(item))
                 logger.debug("Add user:%s" %item['screen_name'])
-
+        elif isinstance(item,Conversa):
+            dbItem = self.conversaCollection.find_one({'ID': item['ID']})
+            if dbItem:
+                pass
+            else:
+                self.conversaCollection.insert_one(dict(item))
+                logger.debug("Add conversa:%s" %item)
         else:
             logger.info("Item type is not recognized! type = %s" %type(item))
 
-
-class SavetoMySQLPipeline(object):
-
-    ''' pipeline that save data to mysql '''
-    def __init__(self):
-        # connect to mysql server
-        self.cnx = mysql.connector.connect(
-            user=SETTINGS["MYSQL_USER"],
-            password=SETTINGS["MYSQL_PWD"],
-            host=SETTINGS["MYSQL_SERVER"],
-            database=SETTINGS["MYSQL_DB"],
-            buffered=True)
-        self.cursor = self.cnx.cursor()
-        self.table_name = SETTINGS["MYSQL_TABLE"]
-        create_table_query =   "CREATE TABLE `" + self.table_name + "` (\
-                `ID` CHAR(20) NOT NULL,\
-                `url` VARCHAR(140) NOT NULL,\
-                `datetime` VARCHAR(22),\
-                `text` VARCHAR(280),\
-                `user_id` CHAR(20) NOT NULL,\
-                `usernameTweet` VARCHAR(20) NOT NULL\
-                )"
-
-        try:
-            self.cursor.execute(create_table_query)
-        except mysql.connector.Error as err:
-            logger.info(err.msg)
-        else:
-            self.cnx.commit()
-
-    def find_one(self, trait, value):
-        select_query =  "SELECT " + trait + " FROM " + self.table_name + " WHERE " + trait + " = " + value + ";"
-        try:
-            val = self.cursor.execute(select_query)
-        except mysql.connector.Error as err:
-            return False
-
-        if (val == None):
-            return False
-        else:
-            return True
-
-    def check_vals(self, item):
-        ID = item['ID']
-        url = item['url']
-        datetime = item['datetime']
-        text = item['text']
-        user_id = item['user_id']
-        username = item['usernameTweet']
-
-        if (ID is None):
-            return False
-        elif (user_id is None):
-            return False
-        elif (url is None):
-            return False
-        elif (text is None):
-            return False
-        elif (username is None):
-            return False
-        elif (datetime is None):
-            return False
-        else:
-            return True
-
-
-    def insert_one(self, item):
-        ret = self.check_vals(item)
-
-        if not ret:
-            return None
-
-        ID = item['ID']
-        user_id = item['user_id']
-        url = item['url']
-        text = item['text']
-        username = item['usernameTweet']
-        datetime = item['datetime']
-
-        insert_query =  'INSERT INTO ' + self.table_name + ' (ID, url, datetime, text, user_id, usernameTweet )'
-        insert_query += ' VALUES ( %s, %s, %s, %s, %s, %s)'
-        insert_query += ' ON DUPLICATE KEY UPDATE'
-        insert_query += ' url = %s, datetime = %s, text= %s, user_id = %s, usernameTweet = %s'
-
-        try:
-            self.cursor.execute(insert_query, (
-                ID,
-                url,
-                datetime,
-                text,
-                user_id,
-                username,
-                url,
-                datetime,
-                text,
-                user_id,
-                username
-                ))
-        except mysql.connector.Error as err:
-            logger.info(err.msg)
-        else:
-            self.cnx.commit()
-
-    def process_item(self, item, spider):
-        if isinstance(item, Tweet):
-           self.insert_one(dict(item))  # Item is inserted or updated.
-           logger.debug("Add tweet:%s" %item['url'])
 
 
 class SaveToFilePipeline(object):
@@ -171,10 +68,14 @@ class SaveToFilePipeline(object):
     def __init__(self):
         self.saveTweetPath = SETTINGS['SAVE_TWEET_PATH']
         self.saveUserPath = SETTINGS['SAVE_USER_PATH']
+        self.saveConversaFile = SETTINGS['SAVE_CONVERSA_FILE']
         mkdirs(self.saveTweetPath) # ensure the path exists
         mkdirs(self.saveUserPath)
 
-
+    def open_spider(self, spider):
+        self.conversafile = open(self.saveConversaFile,'a', encoding='utf-8')
+    def close_spider(self, spider):
+        self.conversafile.close()
     def process_item(self, item, spider):
         if isinstance(item, Tweet):
             savePath = os.path.join(self.saveTweetPath, item['ID'])
@@ -197,15 +98,24 @@ class SaveToFilePipeline(object):
             else:
                 self.save_to_file(item, savePath)
                 logger.debug("Add user:%s" %item['screen_name'])
+        elif isinstance(item,Conversa):
+            if  len(item['context'])>3:
+                self.save_to_file(item)
+            else:
+                pass
 
         else:
             logger.info("Item type is not recognized! type = %s" %type(item))
 
 
-    def save_to_file(self, item, fname):
+    def save_to_file(self, item):
         ''' input: 
                 item - a dict like object
                 fname - where to save
         '''
-        with open(fname,'w', encoding='utf-8') as f:
-            json.dump(dict(item), f, ensure_ascii=False)
+        
+        out = { 'context':[dict(a) for a in item['context']]}
+        out['tweet_id'] = str(item['tweet_id'])
+        out['ID'] = item['ID']
+        self.conversafile.write(json.dumps(out,ensure_ascii=False)+'\n')
+            

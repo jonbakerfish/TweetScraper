@@ -2,10 +2,15 @@ from scrapy.spiders import CrawlSpider, Rule
 from scrapy.selector import Selector
 from scrapy import http
 from scrapy.shell import inspect_response  # for debugging
+from scrapy.utils.project import get_project_settings
 import re
 import json
 import time
 import logging
+import pymongo
+from scrapy.crawler import CrawlerProcess
+emojis = ['😠', '✋', '😳', '💖', '😎', '😒', '😍', '😣', '😫', '😖', '☺', '♥', '👊', '🔫', '😊', '✌', '💟', '😈', '😕', '💔', '💙', '😘', '💯', '😢', '😭', '😔', '😡', '💕', '😑', '😬', '😜', '😩', '💪', '💁', '🙅', '😪', '😋', '🙈', '😞', '😅', '👏', '👍', '🙊', '🎶', '😐', '😉', '😤', '😂', '👌', '❤', '😏', '😓', '🙏', '👀', '😷', '😁', '💜', '💀', '🙌', '😌', '🎧', '✨', '😴', '😄']
+SETTINGS = get_project_settings()
 try:
     from urllib import quote  # Python 2.X
 except ImportError:
@@ -24,6 +29,7 @@ class TweetScraper(CrawlSpider):
 
     def __init__(self, query='', lang='', crawl_user=False, top_tweet=False):
 
+        
         self.query = query
         self.url = "https://twitter.com/i/search/timeline?l={}".format(lang)
 
@@ -76,6 +82,8 @@ class TweetScraper(CrawlSpider):
                     item.xpath('.//div[@class="js-tweet-text-container"]/p//text()|.//div[@class="js-tweet-text-container"]/p//img/@alt').extract()).replace(' # ',
                                                                                                         '#').replace(
                     ' @ ', '@')
+                tweet['emoji'] = ' '.join(
+                    item.xpath('.//div[@class="js-tweet-text-container"]/p//img/@alt').extract())
                 if tweet['text'] == '':
                     # If there is not text, we ignore the tweet
                     continue
@@ -143,7 +151,7 @@ class TweetScraper(CrawlSpider):
 
                 is_reply = item.xpath('.//div[@class="ReplyingToContextBelowAuthor"]').extract()
                 tweet['is_reply'] = is_reply != []
-
+                if not tweet['is_reply']: continue
                 is_retweet = item.xpath('.//span[@class="js-retweet-text"]').extract()
                 tweet['is_retweet'] = is_retweet != []
 
@@ -168,3 +176,4 @@ class TweetScraper(CrawlSpider):
         if extracted:
             return extracted[0]
         return default
+

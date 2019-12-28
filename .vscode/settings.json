@@ -1,0 +1,8 @@
+{
+    "python.pythonPath": "/home/lg/miniconda3/envs/py35/bin/python",
+    "files.watcherExclude": {
+        "**/Data/**": true
+    },
+    "docker.defaultRegistryPath": "valarlg",
+    "editor.fontFamily": ""
+}

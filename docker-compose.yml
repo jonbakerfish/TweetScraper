@@ -1,0 +1,8 @@
+version: "2.0"
+services:
+  tweetscraper:
+    build: .
+    command: python3 runner.py
+    network_mode: host
+    volumes:
+      - .:/TweetScraper

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # !!! # Crawl responsibly by identifying yourself (and your website/e-mail) on the user-agent
-USER_AGENT = 'TweetScraper'
+USER_AGENT = 'valar000@outlook.com'
 
 # settings for spiders
 BOT_NAME = 'TweetScraper'
@@ -19,17 +19,20 @@ ITEM_PIPELINES = {
 # settings for where to save data on disk
 SAVE_TWEET_PATH = './Data/tweet/'
 SAVE_USER_PATH = './Data/user/'
-
+SAVE_CONVERSA_FILE = './Data/conversa'
+CONCURRENT_REQUESTS_PER_DOMAIN = 8
+#DOWNLOAD_DELAY = 0.01
 # settings for mongodb
 MONGODB_SERVER = "127.0.0.1"
 MONGODB_PORT = 27017
 MONGODB_DB = "TweetScraper"        # database name to save the crawled data
 MONGODB_TWEET_COLLECTION = "tweet" # collection name to save tweets
 MONGODB_USER_COLLECTION = "user"   # collection name to save users
-
+MONGODB_CONVERSA_COLLECTION = "conversation"
 #settings for mysql
 MYSQL_SERVER = "127.0.0.1"
 MYSQL_DB     = "TweetScraper"
 MYSQL_TABLE  = "scraper" # the table will be created automatically
 MYSQL_USER   = ""        # MySQL user to use (should have INSERT access granted to the Database/Table
 MYSQL_PWD    = ""        # MySQL user's password
+TELNETCONSOLE_ENABLED = False

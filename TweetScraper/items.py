@@ -9,13 +9,15 @@ class Tweet(Item):
     url = Field()      # tweet url
     datetime = Field() # post time
     text = Field()     # text content
+    emoji = Field()
+
     user_id = Field()  # user id
     usernameTweet = Field() # username of tweet
 
     nbr_retweet = Field()  # nbr of retweet
     nbr_favorite = Field() # nbr of favorite
     nbr_reply = Field()    # nbr of reply
-
+    reply_to = Field()
     is_reply = Field()   # boolean if the tweet is a reply or not
     is_retweet = Field() # boolean if the tweet is just a retweet of another tweet
 
@@ -24,10 +26,14 @@ class Tweet(Item):
 
     has_video = Field() # True/False, whether a tweet contains videos
     videos = Field()    # a list of video urls
-
+    lang = Field()
     has_media = Field() # True/False, whether a tweet contains media (e.g. summary)
     medias = Field()    # a list of media
 
+class Conversa(Item):
+    ID = Field()
+    context = Field()
+    tweet_id = Field()
 
 class User(Item):
     ID = Field()            # user id
