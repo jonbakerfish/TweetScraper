@@ -152,6 +152,7 @@ class ConversaScraper(CrawlSpider):
         
         con = Conversa()
         #ids = set(page.xpath('.//div[contains(@class,"js-stream-tweet") and @data-conversation-id]/@data-conversation-id').extract())
+        #去掉转推等， 出现两个twitter 文的对话
         ids = set(page.xpath('.//div[@data-conversation-id]/@data-conversation-id').extract())
         if len(ids) != 1:
             return 
@@ -159,8 +160,9 @@ class ConversaScraper(CrawlSpider):
             con['ID'] = ids.pop()
         ancestors = page.xpath('.//div[@id="ancestors"]')
         items = ancestors.xpath('.//div[@data-conversation-id=%s]'%con['ID'])
+        #这是被删掉的twitter的数量
         delItiem = len(list(ancestors.xpath('.//div[@class="stream-tombstone-container ThreadedConversation-tweet last"]')))
-
+        #过滤小于3轮的对话
         if len(items) >= 3: 
             self.i+=1
             if delItiem>0:self.count+=1

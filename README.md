@@ -15,10 +15,9 @@ It requires [Scrapy](http://scrapy.org/) and [PyMongo](https://api.mongodb.org/p
 	$ scrapy list
 	$ #If the output is 'TweetScraper', then you are ready to go.
 
-# Usage #
-1. Change the `USER_AGENT` in `TweetScraper/settings.py` to identify who you are
-	
-		USER_AGENT = 'your website/e-mail'
+# Usage # 
+## TweetScraper 
+这一部分是 fork [tweetscrape](https://github.com/jonbakerfish/TweetScraper) 修改部分是为了保留了emoji， 具体看git log
 
 2. In the root folder of this project, run command like: 
 
@@ -26,6 +25,8 @@ It requires [Scrapy](http://scrapy.org/) and [PyMongo](https://api.mongodb.org/p
 
 	where `query` is a list of keywords seperated by comma and quoted by `"`. The query can be any thing (keyword, hashtag, etc.) you want to search in [Twitter Search](https://twitter.com/search-home). `TweetScraper` will crawl the search results of the query and save the tweet content and user information. You can also use the following operators in each query (from [Twitter Search](https://twitter.com/search-home)):
 	
+
+
 	| Operator | Finds tweets... |
 	| --- | --- |
 	| twitter search | containing both "twitter" and "search". This is the default operator. |
@@ -46,9 +47,8 @@ It requires [Scrapy](http://scrapy.org/) and [PyMongo](https://api.mongodb.org/p
 	| hilarious **filter:links** | containing "hilarious" and linking to URLs. |
 	| news **source:twitterfeed** | containing "news" and entered via TwitterFeed |
 
-3. The tweets will be saved to disk in `./Data/tweet/` in default settings and `./Data/user/` is for user data. The file format is JSON. Change the `SAVE_TWEET_PATH` and `SAVE_USER_PATH` in `TweetScraper/settings.py` if you want another location.
+3. The tweets will be saved to disk in `MongoDB` in default settings.
 
-4.  In you want to save the data to MongoDB, change the `ITEM_PIPELINES` in `TweetScraper/settings.py` from `TweetScraper.pipelines.SaveToFilePipeline` to `TweetScraper.pipelines.SaveToMongoPipeline`.
 
 ### Other parameters
 * `lang[DEFAULT='']` allow to choose the language of tweet scrapped. This is not part of the query parameters, it is a different part in the search API URL
@@ -57,7 +57,12 @@ It requires [Scrapy](http://scrapy.org/) and [PyMongo](https://api.mongodb.org/p
 
 E.g.: `scrapy crawl TweetScraper -a query=foo -a crawl_user=True`
 
+## ConversaCrawler
+`scrapy crawl ConversaCrawler` 用来爬取对话，其来源是已经存在mongdb的数据。
 
+设置同上但是直接保存在 `Data/conversa` 中。
+
+注意 这里过滤掉了 小于三轮的对话。
 # Acknowledgement #
 Keeping the crawler up to date requires continuous efforts, we thank all the [contributors](https://github.com/jonbakerfish/TweetScraper/graphs/contributors) for their valuable work.
 
