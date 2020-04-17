@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 # !!! # Crawl responsibly by identifying yourself (and your website/e-mail) on the user-agent
-USER_AGENT = 'TweetScraper'
+USER_AGENT = 'tbs.fr'
 
 # settings for spiders
-BOT_NAME = 'TweetScraper'
+BOT_NAME = 'tbs.fr'
 LOG_LEVEL = 'INFO'
 DOWNLOAD_HANDLERS = {'s3': None,} # from http://stackoverflow.com/a/31233576/2297751, TODO
 

@@ -2,3 +2,4 @@ scrapy
 pymongo
 mysql-connector
 configparser
+lxml
