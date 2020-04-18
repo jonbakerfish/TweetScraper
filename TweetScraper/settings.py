@@ -11,7 +11,9 @@ DOWNLOAD_HANDLERS = {'s3': None,} # from http://stackoverflow.com/a/31233576/229
 SPIDER_MODULES = ['TweetScraper.spiders']
 NEWSPIDER_MODULE = 'TweetScraper.spiders'
 ITEM_PIPELINES = {
-    'TweetScraper.pipelines.SaveToFilePipeline':100,
+
+    'TweetScraper.pipelines.SaveToCSVFilePipeline':100,
+    # 'TweetScraper.pipelines.SaveToFilePipeline':100,
     #'TweetScraper.pipelines.SaveToMongoPipeline':100, # replace `SaveToFilePipeline` with this to use MongoDB
     #'TweetScraper.pipelines.SavetoMySQLPipeline':100, # replace `SaveToFilePipeline` with this to use MySQL
 }
