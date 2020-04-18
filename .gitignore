@@ -2,3 +2,4 @@ Data/
 pyenv/
 
 *.pyc
+.DS_Store
