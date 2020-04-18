@@ -211,8 +211,6 @@ class SaveToFilePipeline(object):
         with open(fname,'w', encoding='utf-8') as f:
             json.dump(dict(item), f, ensure_ascii=False)
 
-
-
 class SaveToCSVFilePipeline(object):
     ''' pipeline that save data to disk '''
     def __init__(self):
@@ -221,49 +219,19 @@ class SaveToCSVFilePipeline(object):
         mkdirs(self.saveTweetPath) # ensure the path exists
         mkdirs(self.saveUserPath)
 
-
     def process_item(self, item, spider):
         if isinstance(item, Tweet):
             savePath = os.path.join(self.saveTweetPath)
             self.save_to_file(item,savePath)
             logger.debug("Add tweet:%s" %item['url'])
-
-        elif isinstance(item, User):
-            savePath = os.path.join(self.saveUserPath, item['ID'])
-            # if os.path.isfile(savePath):
-            #     pass # simply skip existing items
-            #     ### or you can rewrite the file, if you don't want to skip:
-            #     # self.save_to_file(item,savePath)
-            #     # logger.info("Update user:%s"%dbItem['screen_name'])
-            # else:
-            #   #  self.save_to_file(item, savePath)
-            #     logger.debug("Add user:%s" %item['screen_name'])
-
-        else:
-            logger.info("Item type is not recognized! type = %s" %type(item))
+        pass 
 
     def save_to_file(self, item, fname):
-        ''' input: 
-                item - a dict like object
-                fname - where to save
-        '''
-        writeCVS('db.csv',  dict(item))
+        columns = ['ID','datetime','text','user_id','usernameTweet']
+        savePath = os.path.join(fname,item['query'] + ".csv");
+        writeCVS(savePath,columns,  dict(item))
 
-def writeCVS(path,dict_data):
-
-    columns = [
-        'ID',
-        'user_id'
-        'usernameTweet',
-        'text',
-        # 'nbr_retweet',    
-        # 'nbr_favorite'
-        # 'nbr_reply'
-        # 'datetime',
-        # 'is_reply',
-        # 'is_retweet',
-        ]
-
+def writeCVS(path,columns, dict_data):
     if not (os.path.isfile(path)):
         with open(path, 'w', newline='') as f:
             csv_w = csv.writer(f, delimiter=';', quoting=csv.QUOTE_NONNUMERIC)
@@ -271,7 +239,6 @@ def writeCVS(path,dict_data):
     
     with open(path, 'a', newline='') as csvfile:
         csv_file = csv.writer(csvfile, delimiter=';', quoting=csv.QUOTE_MINIMAL)
-        csv_list = [dict_data['ID'],dict_data['usernameTweet'],dict_data['text']]
 
-        csv_list = [dict_data[column] for  column in columns]
+        csv_list = [dict_data.get(column) for  column in columns]
         csv_file.writerow(csv_list)
