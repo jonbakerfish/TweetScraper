@@ -1,4 +1,4 @@
 scrapy
-pymongo
-mysql-connector
-configparser
+scrapy-selenium
+ipython
+ipdb
