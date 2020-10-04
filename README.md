@@ -7,14 +7,18 @@ The crawled data is not as *clean* as the one obtained by the APIs, but the bene
  
 
 # Installation #
-Please install `conda` first, you can get it from [miniconda](https://docs.conda.io/en/latest/miniconda.html). The tested python version is `3.7`. Then run:
+1. Install `conda`, you can get it from [miniconda](https://docs.conda.io/en/latest/miniconda.html). The tested python version is `3.7`. 
 
-    $ git clone https://github.com/jonbakerfish/TweetScraper.git
-    $ cd TweetScraper/
+2. Install selenium python bindings: https://selenium-python.readthedocs.io/installation.html. (Note: the `KeyError: 'driver'` is caused by wrong setup)
+
+3. For ubuntu or debian user, run:
+    
     $ bash install.sh
     $ conda activate tweetscraper
-	$ scrapy list
-	$ #If the output is 'TweetScraper', then you are ready to go.
+    $ scrapy list
+    $ #If the output is 'TweetScraper', then you are ready to go.
+
+    the `install.sh` will create a new environment `tweetscraper` and install all the dependencies (e.g., `firefox-geckodriver` and `firefox`),
 
 # Usage #
 1. Change the `USER_AGENT` in `TweetScraper/settings.py` to identify who you are
