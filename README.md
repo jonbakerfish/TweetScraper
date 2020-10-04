@@ -13,10 +13,12 @@ The crawled data is not as *clean* as the one obtained by the APIs, but the bene
 
 3. For ubuntu or debian user, run:
     
+    ```
     $ bash install.sh
     $ conda activate tweetscraper
     $ scrapy list
     $ #If the output is 'TweetScraper', then you are ready to go.
+    ```
 
     the `install.sh` will create a new environment `tweetscraper` and install all the dependencies (e.g., `firefox-geckodriver` and `firefox`),
 
