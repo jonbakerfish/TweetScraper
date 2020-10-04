@@ -97,7 +97,7 @@ class TweetScraper(CrawlSpider):
         """
         if cursor:
             url = self.url + '&cursor={cursor}'
-            url = url.format(query=quote(self.query), cursor=cursor)
+            url = url.format(query=quote(self.query), cursor=quote(cursor))
         else:
             url = self.url.format(query=quote(self.query))
         request = http.Request(url, callback=self.parse_result_page, cookies=self.cookies, headers=self.headers)
