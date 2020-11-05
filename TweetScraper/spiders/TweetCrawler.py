@@ -46,6 +46,7 @@ class TweetScraper(CrawlSpider):
             f'&spelling_corrections=1'
             f'&ext=mediaStats%2ChighlightedLabel'
             f'&count=20'
+            f'&tweet_search_mode=live'
         )
         self.url = self.url + '&q={query}'
         self.query = query
