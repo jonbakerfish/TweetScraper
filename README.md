@@ -7,20 +7,13 @@ The crawled data is not as *clean* as the one obtained by the APIs, but the bene
  
 
 # Installation #
-1. Install `conda`, you can get it from [miniconda](https://docs.conda.io/en/latest/miniconda.html). The tested python version is `3.7`. 
+1. Install selenium python bindings: https://selenium-python.readthedocs.io/installation.html. (Note: the `KeyError: 'driver'` is caused by wrong setup)
 
-2. Install selenium python bindings: https://selenium-python.readthedocs.io/installation.html. (Note: the `KeyError: 'driver'` is caused by wrong setup)
-
-3. For ubuntu or debian user, run:
+2. Run:
     
     ```
-    $ bash install.sh
-    $ conda activate tweetscraper
-    $ scrapy list
-    $ #If the output is 'TweetScraper', then you are ready to go.
+    $ pip3 install -r requirements.txt
     ```
-
-    the `install.sh` will create a new environment `tweetscraper` and install all the dependencies (e.g., `firefox-geckodriver` and `firefox`),
 
 # Usage #
 1. Change the `USER_AGENT` in `TweetScraper/settings.py` to identify who you are
@@ -37,8 +30,8 @@ The crawled data is not as *clean* as the one obtained by the APIs, but the bene
 
 
 # Acknowledgement #
-Keeping the crawler up to date requires continuous efforts, please support our work via [opencollective.com/tweetscraper](https://opencollective.com/tweetscraper).
+This repository is a fork of the [original TweetScraper](https://github.com/jonbakerfish/TweetScraper)
 
 
 # License #
-TweetScraper is released under the [GNU GENERAL PUBLIC LICENSE, Version 2](https://github.com/jonbakerfish/TweetScraper/blob/master/LICENSE)
+TweetScraper is released under the [GNU GENERAL PUBLIC LICENSE, Version 2](https://github.com/JonasPuchinger/TweetScraper/blob/master/LICENSE)
