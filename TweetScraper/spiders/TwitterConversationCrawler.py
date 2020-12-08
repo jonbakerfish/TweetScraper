@@ -49,8 +49,6 @@ class TwitterConversationScraper(CrawlSpider):
         )
         self.query = query
         self.num_search_issued = 0
-        # regex for finding next cursor
-        self.cursor_re = re.compile('"(scroll:[^"]*)"')
 
 
     def start_requests(self):
