@@ -8,3 +8,8 @@ class Tweet(Item):
 class User(Item):
     id_ = Field()
     raw_data = Field()
+
+class Conversation(Item):
+    id_ = Field()
+    raw_data = Field()
+

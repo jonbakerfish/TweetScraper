@@ -1,7 +1,7 @@
 import os, logging, json
 from scrapy.utils.project import get_project_settings
 
-from TweetScraper.items import Tweet, User
+from TweetScraper.items import Tweet, User, Conversation
 from TweetScraper.utils import mkdirs
 
 
@@ -14,8 +14,10 @@ class SaveToFilePipeline(object):
     def __init__(self):
         self.saveTweetPath = SETTINGS['SAVE_TWEET_PATH']
         self.saveUserPath = SETTINGS['SAVE_USER_PATH']
+        self.saveConversationPath = SETTINGS['SAVE_CONVERSATION_PATH']
         mkdirs(self.saveTweetPath) # ensure the path exists
         mkdirs(self.saveUserPath)
+        mkdirs(self.saveConversationPath)
 
 
     def process_item(self, item, spider):
@@ -42,6 +44,18 @@ class SaveToFilePipeline(object):
             else:
                 self.save_to_file(item, savePath)
                 logger.debug("Add user:%s" %item['id_'])
+
+        elif isinstance(item, Conversation):
+            savePath = os.path.join(self.saveConversationPath, item['id_'])
+            if os.path.isfile(savePath):
+                pass # simply skip existing items
+                # logger.debug("skip conversation:%s"%item['id_'])
+                ### or you can rewrite the file, if you don't want to skip:
+                # self.save_to_file(item,savePath)
+                # logger.debug("Update conversation:%s"%item['id_'])
+            else:
+                self.save_to_file(item, savePath)
+                logger.debug("Add conversation:%s" %item['id_'])
 
         else:
             logger.info("Item type is not recognized! type = %s" %type(item))
