@@ -1,4 +1,4 @@
-import os, logging, json
+import os, logging, json, re
 from scrapy.utils.project import get_project_settings
 
 from TweetScraper.items import Tweet, User, Conversation
@@ -11,10 +11,17 @@ SETTINGS = get_project_settings()
 class SaveToFilePipeline(object):
     ''' pipeline that save data to disk '''
 
-    def __init__(self):
-        self.saveTweetPath = SETTINGS['SAVE_TWEET_PATH']
-        self.saveUserPath = SETTINGS['SAVE_USER_PATH']
-        self.saveConversationPath = SETTINGS['SAVE_CONVERSATION_PATH']
+    @classmethod
+    def from_crawler(cls, crawler):
+        query_name = getattr(crawler.spider, 'query')
+        query_name = re.search(r'from:(\S*)\s?', query_name).group(1)
+        return cls(query_name)
+
+
+    def __init__(self, query_name):
+        self.saveTweetPath = SETTINGS['SAVE_TWEET_PATH'] + query_name
+        self.saveUserPath = SETTINGS['SAVE_USER_PATH'] + query_name
+        self.saveConversationPath = SETTINGS['SAVE_CONVERSATION_PATH'] + query_name
         mkdirs(self.saveTweetPath) # ensure the path exists
         mkdirs(self.saveUserPath)
         mkdirs(self.saveConversationPath)
