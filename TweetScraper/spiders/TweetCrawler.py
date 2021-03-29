@@ -76,7 +76,7 @@ class TweetScraper(CrawlSpider):
         driver = response.meta['driver']
         try:
             self.cookies = driver.get_cookies()
-            self.x_guest_token = driver.get_cookie('gt')['value']
+            self.x_guest_token = driver.get_cookie('guest_id')['value']
             # self.x_csrf_token = driver.get_cookie('ct0')['value']
         except:
             logger.info('cookies are not updated!')
