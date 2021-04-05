@@ -31,7 +31,7 @@ The crawled data is not as *clean* as the one obtained by the APIs, but the bene
 
 		scrapy crawl TweetScraper -a query="foo,#bar"
 
-	where `query` is a list of keywords seperated by comma and quoted by `"`. The query can be any thing (keyword, hashtag, etc.) you want to search in [Twitter Search](https://twitter.com/search-home). `TweetScraper` will crawl the search results of the query and save the tweet content and user information. 
+	where `query` is a list of keywords separated by comma and quoted by `"`. The query can be anything (keyword, hashtag, etc.) you want to search in [Twitter Search](https://twitter.com/search-home). `TweetScraper` will crawl the search results of the query and save the tweet content and user information. 
 
 3. The tweets will be saved to disk in `./Data/tweet/` in default settings and `./Data/user/` is for user data. The file format is JSON. Change the `SAVE_TWEET_PATH` and `SAVE_USER_PATH` in `TweetScraper/settings.py` if you want another location.
 
